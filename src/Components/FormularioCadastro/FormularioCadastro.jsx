@@ -1,65 +1,96 @@
-import React, {useState} from 'react';
+import React, { useState } from "react";
 import { TextField, Button, Switch, FormControlLabel } from "@material-ui/core";
 
-function FormularioCadastro(){
-    const [nome, setNome] = useState("");
-    const [sobrenome, setSobrenome] = useState("");
-    
-    return(
+function FormularioCadastro({aoEnviar}) {
+  const [nome, setNome] = useState("");
+  const [sobrenome, setSobrenome] = useState("");
+  const [cpf, setCpf] = useState("");
+  const [promocoes, setPromocoes] = useState(true);
+  const [novidades, setNovidades] = useState(true);
+  const [erros, setErros] = useState({cpf:{valido:true, texto:""}});
+
+  return (
     <form
-        onSubmit={(event) => {
+      onSubmit={(event) => {
         event.preventDefault();
-        console.log(nome, sobrenome);}}>
+        aoEnviar({nome, sobrenome, novidades, promocoes});
+      }}
+    >
+      <TextField
+        value={nome}
+        onChange={(event) => {
+          setNome(event.target.value);
+        }}
+        id="nome"
+        label="Nome"
+        variant="outlined"
+        margin="normal"
+        fullWidth
+      />
+      <TextField
+        value={sobrenome}
+        onChange={(event) => {
+          setSobrenome(event.target.value);
+        }}
+        id="sobrenome"
+        label="Sobrenome"
+        variant="outlined"
+        margin="normal"
+        fullWidth
+      />
+      <TextField
+        value={cpf}
+        onChange={(event) => {
+          setCpf(event.target.value);
+        }}
+        onBlur={(event)=>{
+            if(cpf.length != 11){
+                setErros({cpf:{valido:false, texto:"CPF deve ter 11 digitos"}})
+            }
+        }}
+        error={!erros.cpf.valido}
+        helperText={erros.cpf.texto}
+        id="CPF"
+        label="CPF"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+      />
 
-        <TextField
-                value={nome}
-                
-                onChange={(event) => {
-                    let tmpNome = event.target.value;
-                    if(tmpNome.length >= 3){
-                        tmpNome = tmpNome.substr(0, 3);
-                    }
-                    setNome(tmpNome);
-                    
-                }}
-            id="nome" 
-            label="Nome" 
-            variant="outlined" 
-            margin="normal"
-            fullWidth 
-        />
-        <TextField
-            value={sobrenome}
+      <FormControlLabel
+        label="Promoções"
+        control={
+          <Switch
+            checked={promocoes}
             onChange={(event) => {
-                setSobrenome(event.target.value);
-            }} 
-            id="sobrenome" 
-            label="Sobrenome" 
-            variant="outlined" 
-            margin="normal" 
-            fullWidth 
-        />
-        <TextField 
-            id="CPF" 
-            label="CPF" 
-            variant="outlined" 
-            fullWidth 
-            margin="normal" 
-        />
+              setPromocoes(event.target.checked);
+            }}
+            name="promocoes"
+            defaultChecked={promocoes}
+            color="primary"
+          />
+        }
+      />
+      <FormControlLabel
+        label="Novidades"
+        control={
+          <Switch
+            checked={novidades}
+            onChange={(event) => {
+              setNovidades(event.target.checked);
+            }}
+            name="novidades"
+            defaultChecked={novidades}
+            color="primary"
+          />
+        }
+      />
 
-        <FormControlLabel 
-            label="Promoções" 
-            control={<Switch name="promocoes" defaultChecked={true} color="primary"/>}
-        />
-        <FormControlLabel 
-            label="Novidades" 
-            control={<Switch name="novidades" defaultChecked={true} color="primary" />}
-        />
-
-        <Button variant="contained" color="primary" type="sumbit">Cadastrar</Button>
+      <Button variant="contained" color="primary" type="sumbit">
+        Cadastrar
+      </Button>
     </form>
-);
-
+  );
 }
 
 export default FormularioCadastro;
