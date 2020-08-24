@@ -55,7 +55,6 @@ function FormularioCadastro({aoEnviar, validarCPF}) {
         fullWidth
         margin="normal"
       />
-
       <FormControlLabel
         label="Promoções"
         control={
